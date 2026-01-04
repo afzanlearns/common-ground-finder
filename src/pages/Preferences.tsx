@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { InterestChip } from "@/components/preferences/InterestChip";
 import { AvailabilityGrid } from "@/components/preferences/AvailabilityGrid";
 import { ArrowRight } from "lucide-react";
@@ -58,7 +57,7 @@ const Preferences = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header variant="app" />
-      
+
       <main className="flex-1 py-10 md:py-16">
         <div className="container max-w-4xl">
           {/* Page Header */}
@@ -69,7 +68,7 @@ const Preferences = () => {
               </span>
               <span className="text-sm text-muted-foreground">— Q3 2024</span>
             </div>
-            
+
             <h1 className="heading-display text-4xl md:text-5xl mb-3">
               Group <span className="heading-display-italic text-primary">Preferences</span>
             </h1>
@@ -205,8 +204,6 @@ const Preferences = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

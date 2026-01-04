@@ -19,11 +19,6 @@ const Index = () => {
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
               {/* Left: Headline */}
               <div className="space-y-6 animate-fade-in">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card text-xs font-medium text-muted-foreground transition-all duration-300 hover:border-primary/30 hover:shadow-sm cursor-default">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-subtle" />
-                  Smart Consensus Tool
-                </div>
-
                 <h1 className="heading-display text-5xl md:text-6xl lg:text-7xl text-balance">
                   Consensus,
                   <br />

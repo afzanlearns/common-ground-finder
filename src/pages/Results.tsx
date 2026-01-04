@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { ScoreCircle } from "@/components/results/ScoreCircle";
 import { AlternativeCard } from "@/components/results/AlternativeCard";
 import { MetricCard } from "@/components/results/MetricCard";
@@ -11,7 +10,7 @@ const Results = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header variant="app" />
-      
+
       <main className="flex-1 py-10 md:py-16">
         <div className="container">
           {/* Breadcrumb */}
@@ -164,8 +163,6 @@ const Results = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

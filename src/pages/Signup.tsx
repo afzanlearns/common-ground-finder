@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header variant="auth" />
-      
+
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md animate-fade-in">
           <div className="card-elevated p-8">
@@ -118,8 +117,6 @@ const Signup = () => {
           </div>
         </div>
       </main>
-
-      <Footer variant="minimal" />
     </div>
   );
 };

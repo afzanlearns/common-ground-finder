@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { Copy, Check, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -12,7 +11,7 @@ const CreateGroup = () => {
   const [description, setDescription] = useState("");
   const [isCreated, setIsCreated] = useState(false);
   const [copied, setCopied] = useState(false);
-  
+
   const inviteLink = "https://common-ground.app/join/Q3-DevFest-2024";
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,7 +28,7 @@ const CreateGroup = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header variant="app" />
-      
+
       <main className="flex-1 py-12 md:py-20">
         <div className="container max-w-xl">
           <div className="text-center mb-10 animate-fade-in">
@@ -99,9 +98,9 @@ const CreateGroup = () => {
                       readOnly
                       className="bg-muted/50 font-mono text-sm"
                     />
-                    <Button 
-                      variant="outline" 
-                      size="icon" 
+                    <Button
+                      variant="outline"
+                      size="icon"
                       className="shrink-0"
                       onClick={handleCopy}
                     >
@@ -132,8 +131,6 @@ const CreateGroup = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

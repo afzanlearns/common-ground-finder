@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header variant="auth" />
-      
+
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md animate-fade-in">
           <div className="text-center mb-8">
@@ -51,8 +50,8 @@ const Login = () => {
                   <label className="label-uppercase text-foreground">
                     Password
                   </label>
-                  <Link 
-                    to="#" 
+                  <Link
+                    to="#"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Forgot password?
@@ -112,8 +111,6 @@ const Login = () => {
           </p>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };
