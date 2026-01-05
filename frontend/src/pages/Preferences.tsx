@@ -44,23 +44,23 @@ const Preferences = () => {
 
   useEffect(() => {
     if (!groupId) {
-       // Allow testing without groupId, but warn
-       // toast.error("No Group ID provided");
-       setGroupTitle("Demo Group");
-       return;
+      // Allow testing without groupId, but warn
+      // toast.error("No Group ID provided");
+      setGroupTitle("Demo Group");
+      return;
     }
     const fetchGroup = async () => {
-        try {
-            const docRef = doc(db, "groups", groupId);
-            const snap = await getDoc(docRef);
-            if (snap.exists()) {
-                setGroupTitle(snap.data().title);
-            } else {
-                setGroupTitle("Unknown Group");
-            }
-        } catch (e) {
-            console.error("Error fetching group", e);
+      try {
+        const docRef = doc(db, "groups", groupId);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          setGroupTitle(snap.data().title);
+        } else {
+          setGroupTitle("Unknown Group");
         }
+      } catch (e) {
+        console.error("Error fetching group", e);
+      }
     };
     fetchGroup();
   }, [groupId]);
@@ -85,55 +85,55 @@ const Preferences = () => {
 
   const handleSubmit = async () => {
     if (!auth.currentUser) {
-        toast.error("Please login first");
-        navigate("/login");
-        return;
+      toast.error("Please login first");
+      navigate("/login");
+      return;
     }
 
     if (!groupId) {
-        toast.error("Invalid Group ID");
-        return;
+      toast.error("Invalid Group ID");
+      return;
     }
 
     setIsLoading(true);
     try {
-        // Convert availability to simplistic list of strings for the backend
-        const days: string[] = [];
-        const times: string[] = [];
-        
-        // Simple mapping: if ANY time in a day is selected, add the day.
-        Object.entries(availability).forEach(([day, slots]) => {
-            if (slots.am || slots.pm) {
-                days.push(day); // MON, TUE...
-                if (slots.am) times.push(`${day}-AM`);
-                if (slots.pm) times.push(`${day}-PM`);
-            }
-        });
+      // Convert availability to simplistic list of strings for the backend
+      const days: string[] = [];
+      const times: string[] = [];
 
-        // Backend expects 'days' and 'times' arrays. 
-        // We will just pass the raw days for now, as the simple solver handles days overlap.
-        
-        await setDoc(doc(db, "groups", groupId, "participants", auth.currentUser.uid), {
-            userId: auth.currentUser.uid,
-            email: auth.currentUser.email,
-            topics: selectedTopics,
-            location: location,
-            travelRadius: travelRadius[0],
-            availability: {
-                days: days, // ["MON", "WED"]
-                times: times // ["MON-AM", "WED-PM"]
-            },
-            notes: notes,
-            updatedAt: new Date()
-        });
+      // Simple mapping: if ANY time in a day is selected, add the day.
+      Object.entries(availability).forEach(([day, slots]) => {
+        if (slots.am || slots.pm) {
+          days.push(day); // MON, TUE...
+          if (slots.am) times.push(`${day}-AM`);
+          if (slots.pm) times.push(`${day}-PM`);
+        }
+      });
 
-        toast.success("Preferences saved!");
-        navigate(`/results?groupId=${groupId}`);
+      // Backend expects 'days' and 'times' arrays. 
+      // We will just pass the raw days for now, as the simple solver handles days overlap.
+
+      await setDoc(doc(db, "groups", groupId, "participants", auth.currentUser.uid), {
+        userId: auth.currentUser.uid,
+        email: auth.currentUser.email,
+        topics: selectedTopics,
+        location: location,
+        travelRadius: travelRadius[0],
+        availability: {
+          days: days, // ["MON", "WED"]
+          times: times // ["MON-AM", "WED-PM"]
+        },
+        notes: notes,
+        updatedAt: new Date()
+      });
+
+      toast.success("Preferences saved!");
+      navigate(`/results?groupId=${groupId}`);
     } catch (e: any) {
-        console.error(e);
-        toast.error("Failed to save: " + e.message);
+      console.error(e);
+      toast.error("Failed to save: " + e.message);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -161,10 +161,11 @@ const Preferences = () => {
 
           <div className="space-y-6">
             {/* Interests Section */}
-            <section className="card-elevated p-6 md:p-8 animate-slide-up">
+            <section className="card-elevated p-6 md:p-8 animate-slide-up relative">
+              <span className="absolute top-3 right-6 text-[10px] italic text-primary">Required</span>
               <div className="grid md:grid-cols-[200px_1fr] gap-6">
-                <div>
-                  <h2 className="font-serif text-2xl mb-2">Interests</h2>
+                <div className="flex flex-col items-start gap-1">
+                  <h2 className="font-serif text-2xl mb-0">Interests</h2>
                   <p className="text-sm text-muted-foreground">
                     Select the topics you are most passionate about.
                   </p>
@@ -183,10 +184,11 @@ const Preferences = () => {
             </section>
 
             {/* Availability Section */}
-            <section className="card-elevated p-6 md:p-8 animate-slide-up" style={{ animationDelay: "50ms" }}>
+            <section className="card-elevated p-6 md:p-8 animate-slide-up relative" style={{ animationDelay: "50ms" }}>
+              <span className="absolute top-3 right-6 text-[10px] italic text-primary">Required</span>
               <div className="grid md:grid-cols-[200px_1fr] gap-6">
-                <div>
-                  <h2 className="font-serif text-2xl mb-2">Availability</h2>
+                <div className="flex flex-col items-start gap-1">
+                  <h2 className="font-serif text-2xl mb-0">Availability</h2>
                   <p className="text-sm text-muted-foreground">
                     Mark your free slots.
                   </p>
@@ -199,10 +201,11 @@ const Preferences = () => {
             </section>
 
             {/* Location Section */}
-            <section className="card-elevated p-6 md:p-8 animate-slide-up" style={{ animationDelay: "150ms" }}>
+            <section className="card-elevated p-6 md:p-8 animate-slide-up relative" style={{ animationDelay: "150ms" }}>
+              <span className="absolute top-3 right-6 text-[10px] italic text-primary">Required</span>
               <div className="grid md:grid-cols-[200px_1fr] gap-6">
-                <div>
-                  <h2 className="font-serif text-2xl mb-2">Location</h2>
+                <div className="flex flex-col items-start gap-1">
+                  <h2 className="font-serif text-2xl mb-0">Location</h2>
                   <p className="text-sm text-muted-foreground">
                     Where are you joining from?
                   </p>
@@ -236,10 +239,11 @@ const Preferences = () => {
             </section>
 
             {/* Notes Section */}
-            <section className="card-elevated p-6 md:p-8 animate-slide-up" style={{ animationDelay: "200ms" }}>
+            <section className="card-elevated p-6 md:p-8 animate-slide-up relative" style={{ animationDelay: "200ms" }}>
+              <span className="absolute top-3 right-6 text-[10px] italic text-muted-foreground">Optional</span>
               <div className="grid md:grid-cols-[200px_1fr] gap-6">
-                <div>
-                  <h2 className="font-serif text-2xl mb-2">Notes</h2>
+                <div className="flex flex-col items-start gap-1">
+                  <h2 className="font-serif text-2xl mb-0">Notes</h2>
                 </div>
                 <div className="space-y-2">
                   <Textarea
@@ -251,15 +255,15 @@ const Preferences = () => {
                 </div>
               </div>
             </section>
-            
+
             {/* Submit Bar */}
-             <div className="card-elevated p-4 flex flex-wrap items-center justify-end gap-4 animate-slide-up">
-               <Button variant="outline" disabled={isLoading}>Save Draft</Button>
-               <Button variant="hero" className="gap-2" onClick={handleSubmit} disabled={isLoading}>
-                  {isLoading ? "Saving..." : "Submit Preferences"}
-                  <ArrowRight className="h-4 w-4" />
-               </Button>
-             </div>
+            <div className="card-elevated p-4 flex flex-wrap items-center justify-end gap-4 animate-slide-up">
+              <Button variant="outline" disabled={isLoading}>Save Draft</Button>
+              <Button variant="hero" className="gap-2" onClick={handleSubmit} disabled={isLoading}>
+                {isLoading ? "Saving..." : "Submit Preferences"}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </main>

@@ -74,6 +74,12 @@ export function solve(participants: Participant[]): Result {
         bestOption.attendees = Array(12).fill("mock-user");
     }
 
+    // Force Location to be user input if available (to support single-user demo flow)
+    const userLocation = participants.find(p => p.location && p.location.trim().length > 0)?.location;
+    if (userLocation) {
+        bestOption.location = userLocation;
+    }
+
     const alternatives = allOptions.slice(1, 4).map((alt, index) => {
         // Enforce distinct mock scores
         const mockScores = [80, 75, 70];

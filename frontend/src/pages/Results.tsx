@@ -120,9 +120,9 @@ const Results = () => {
                       <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="label-uppercase text-muted-foreground">Venue</span>
                     </div>
-                    <p className="font-medium">{bestOption?.location || "TBD"}</p>
+                    <p className="font-medium">Venue Online</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="px-2 py-0.5 rounded text-xs bg-card border border-border">Optimal Center</span>
+                      <span className="text-sm text-muted-foreground">{bestOption?.location || "No Location Specified"}</span>
                     </div>
                   </div>
                 </div>
