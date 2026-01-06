@@ -4,8 +4,17 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import { LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon, Settings, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface HeaderProps {
   variant?: "landing" | "auth" | "app";
@@ -58,18 +67,43 @@ export function Header({ variant = "landing", showNav = true }: HeaderProps) {
         </Link>
 
         {showNav && variant === "landing" && (
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-2">
             <ThemeToggle />
             {user ? (
-              <>
-                 <Button variant="ghost" size="sm" className="hover-lift" asChild>
-                  <Link to="/create-group">Dashboard</Link>
-                </Button>
-                <Button variant="outline" size="sm" className="gap-2 hover-lift" onClick={handleLogout}>
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user.photoURL || ""} alt={user.email || ""} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                        {getInitials(user.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.displayName || user.email?.split('@')[0]}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/create-group" className="cursor-pointer w-full flex items-center">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Button variant="ghost" size="sm" className="hover-lift" asChild>
@@ -132,21 +166,34 @@ export function Header({ variant = "landing", showNav = true }: HeaderProps) {
               </Link>
             </nav>
             <ThemeToggle />
-            
             {user && (
-                <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="text-right hidden sm:block">
-                    <p className="text-sm font-medium transition-colors duration-300 group-hover:text-primary">
-                        {user.email?.split('@')[0] || "User"}
-                    </p>
-                    <button onClick={handleLogout} className="text-xs text-muted-foreground hover:text-destructive flex items-center justify-end gap-1 w-full">
-                        Sign out
-                    </button>
-                </div>
-                <div className="h-9 w-9 rounded-full bg-primary/10 border border-border flex items-center justify-center text-sm font-medium text-primary transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-md">
-                    {getInitials(user.email)}
-                </div>
-                </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user.photoURL || ""} alt={user.email || ""} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                        {getInitials(user.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.displayName || user.email?.split('@')[0]}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             {!user && (
                  <Button variant="ghost" size="sm" asChild>

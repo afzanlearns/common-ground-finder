@@ -8,6 +8,7 @@ import { MetricCard } from "@/components/results/MetricCard";
 import { Calendar, MapPin, HelpCircle, Users, Globe, Check, RefreshCw, ArrowUpRight } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
+import { toast } from "sonner";
 
 const Results = () => {
   const [searchParams] = useSearchParams();
@@ -81,6 +82,11 @@ const Results = () => {
               </p>
             </div>
             <div className="flex flex-col items-end gap-2">
+              {result.isDemoData && (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-bold uppercase tracking-widest border border-amber-500/20">
+                   Demo Mode
+                </div>
+              )}
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card text-sm">
                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                 Live Calculation
@@ -157,6 +163,22 @@ const Results = () => {
               <section className="animate-slide-up" style={{ animationDelay: "100ms" }}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-serif text-2xl">Alternative Scenarios</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-2 text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => {
+                        const BACKEND_URL = 'https://common-ground-finder-pa54.vercel.app/';
+                        fetch(BACKEND_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ groupId })
+                        }).then(() => toast.success("Recalculation triggered!"));
+                    }}
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Recalculate
+                  </Button>
                 </div>
                 {alternatives && alternatives.length > 0 ? (
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -184,16 +206,16 @@ const Results = () => {
               <MetricCard
                 icon={<Users className="h-4 w-4" />}
                 label="Attendance"
-                value={bestOption?.attendees?.length?.toString() || "12"}
+                value={bestOption?.attendees?.length?.toString() || "0"}
                 subtext="Members"
                 detail="Estimated attendance based on availability."
               />
               <MetricCard
                 icon={<Globe className="h-4 w-4" />}
                 label="Average Travel"
-                value={bestOption?.avgDistance?.toFixed(1) || "1.2"}
+                value={bestOption?.avgDistance !== undefined ? bestOption.avgDistance.toFixed(1) : "0.0"}
                 subtext="km"
-                detail="Average distance for attendees."
+                detail="Average distance for attendees clusters."
               />
 
               {/* Decision Actions */}
