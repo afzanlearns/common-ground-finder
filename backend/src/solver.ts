@@ -127,7 +127,7 @@ export function solve(participants: Participant[]): Result {
         bestOption.pros = ["Maximum overlap found", "High topic alignment"];
     }
 
-    // Filter and update alternatives
+    // Filter and update alternatives (Step 2.5)
     const alternatives = allOptions.slice(1, 4).map((alt, idx) => {
         const fairness = isMockMode ? (85 - (idx * 5)) : calculateFairness(alt);
         const dist = isMockMode ? (2.5 + (idx * 1.2)) : calculateDistance(alt);
@@ -140,11 +140,40 @@ export function solve(participants: Participant[]): Result {
         };
     });
 
+    // 3. Participation Stats (Breakdown)
+    const stats = {
+        topics: topicCounts,
+        availability: {} as Record<string, number>,
+        totalParticipants: participants.length
+    };
+
+    // Calculate aggregated availability for stats
+    slots.forEach(day => {
+        windows.forEach(win => {
+            const winFrom = timeToMinutes(win.from);
+            const winTo = timeToMinutes(win.to);
+            const count = participants.filter(p => {
+                const daySlot = (p.availability as any)?.[day];
+                if (!daySlot || !daySlot.selected) return false;
+                const pFrom = timeToMinutes(daySlot.from);
+                const pTo = timeToMinutes(daySlot.to);
+                const start = Math.max(winFrom, pFrom);
+                const end = Math.min(winTo, pTo);
+                return (end - start) >= 60;
+            }).length;
+            if (count > 0) {
+                stats.availability[`${day} ${win.label}`] = count;
+            }
+        });
+    });
+
     return {
         bestOption,
         alternatives,
         computedAt: new Date(),
         fairnessScore: bestOption.fairnessScore,
-        // explanation and isAiGenerated will be added by gemini.ts
+        stats,
+        totalParticipants: participants.length,
+        isDemoData: isMockMode
     };
 }
