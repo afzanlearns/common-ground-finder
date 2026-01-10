@@ -16,23 +16,47 @@ export function solve(participants: Participant[]): Result {
     const topTopic = sortedTopics.length > 0 ? sortedTopics[0][0] : "General Meetup";
 
     // 2. Calculate Availability Overlap
-    // We check every slot (Mon AM, Mon PM, etc.)
-    const slots = ["MON", "TUE", "WED", "THU", "FRI"];
-    const periods = ["am", "pm"];
+    // We check every slot against common windows (Morning, Afternoon, Evening)
+    const slots = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-    let bestSlot = { day: "MON", period: "pm", count: -1, attendees: [] as string[] };
+    // Convert "HH:MM" to minutes from midnight
+    const timeToMinutes = (time: string) => {
+        if (!time) return 0;
+        const [h, m] = time.split(':').map(Number);
+        return h * 60 + m;
+    };
+
+    const windows = [
+        { label: "Morning Session", from: "09:00", to: "13:00" },
+        { label: "Afternoon Session", from: "14:00", to: "18:00" },
+        { label: "Evening Session", from: "19:00", to: "22:00" }
+    ];
+
     const allOptions: Option[] = [];
 
     slots.forEach(day => {
-        periods.forEach(period => {
-            const attendees = participants.filter(p =>
-                p.availability[day] && p.availability[day][period as "am" | "pm"]
-            ).map(p => p.userId);
+        windows.forEach(win => {
+            const winFrom = timeToMinutes(win.from);
+            const winTo = timeToMinutes(win.to);
+
+            const attendees = participants.filter(p => {
+                const daySlot = (p.availability as any)?.[day];
+                if (!daySlot || !daySlot.selected) return false;
+
+                const pFrom = timeToMinutes(daySlot.from);
+                const pTo = timeToMinutes(daySlot.to);
+
+                // Overlap calculation
+                const start = Math.max(winFrom, pFrom);
+                const end = Math.min(winTo, pTo);
+
+                // If they overlap for at least 60 minutes
+                return (end - start) >= 60;
+            }).map(p => p.userId);
 
             const score = Math.round((attendees.length / participants.length) * 100);
 
-            // Simple logic: Location is just the most common location of attendees
-            // In a real app, we'd calculate centroid.
+            // Calculate location consensus for these attendees
             const locCounts: Record<string, number> = {};
             attendees.forEach(uid => {
                 const p = participants.find(x => x.userId === uid);
@@ -40,24 +64,18 @@ export function solve(participants: Participant[]): Result {
             });
             const topLoc = Object.entries(locCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Online";
 
-            const option: Option = {
-                title: `${topTopic} Session`,
-                description: `A session focused on ${topTopic}, maximizing attendance.`,
+            allOptions.push({
+                title: `${topTopic} ${win.label}`,
+                description: `A session for ${topTopic} that fits most people.`,
                 day,
-                time: period.toUpperCase(),
+                time: `${win.from}-${win.to}`,
                 location: topLoc,
                 score,
-                fairnessScore: 90, // Placeholder for complex fairness math
+                fairnessScore: 0, // Calculated below
                 attendees,
-                pros: [`${attendees.length}/${participants.length} Available`],
+                pros: [`${attendees.length} Members Available`],
                 cons: []
-            };
-
-            allOptions.push(option);
-
-            if (attendees.length > bestSlot.count) {
-                bestSlot = { day, period, count: attendees.length, attendees };
-            }
+            });
         });
     });
 
