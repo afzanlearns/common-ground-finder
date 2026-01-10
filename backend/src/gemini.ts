@@ -12,50 +12,65 @@ const FALLBACK_EXPLANATION =
 
 export async function generateExplanation(result: Result): Promise<string> {
   if (!API_KEY) {
-    console.warn("GEMINI_API_KEY is missing. Using fallback explanation.");
+    console.warn("GEMINI_API_KEY is missing from backend/.env. Using fallback explanation.");
     return FALLBACK_EXPLANATION;
   }
 
-  try {
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+  // List of models to try in order of preference
+  const modelsToTry = [
+    "gemini-flash-latest",
+    "gemini-1.5-flash",
+  ];
+  let lastError = "";
 
-    const bestOption = result.bestOption;
-    const alternatives = result.alternatives.map(a => `${a.title} (${a.fairnessScore}% fairness)`).join(", ");
+  for (const modelName of modelsToTry) {
+    try {
+      console.log(`Attempting AI explanation with model: ${modelName}`);
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({ model: modelName });
 
-    const prompt = `
-        You are an AI assistant for a group decision support app called 'Common Ground Finder'.
-        
-        Task: Explain why this specific option was recommended to the group.
-        
-        Recommendation Data (Mocked):
-        - Title: ${bestOption.title}
-        - Time: ${bestOption.day} ${bestOption.time}
-        - Venue: ${bestOption.location}
-        - Fairness Score: ${bestOption.fairnessScore} (out of 100)
-        - Attendees: ${bestOption.attendees.length} people
-        - Pros: ${bestOption.pros.join(", ")}
-        - Alternatives considered: ${alternatives}
+      const bestOption = result.bestOption;
+      const alternatives = (result.alternatives || []).map(a => `${a.title} (${a.fairnessScore}% fairness)`).join(", ");
 
-        Instructions:
-        1. Explain the decision in clear, non-technical language.
-        2. Reference fairness, availability, and location balance.
-        3. Mention trade-offs honestly if relevant.
-        4. Do NOT invent new data or facts not present here.
-        5. Do NOT sound promotional. Keep the tone neutral, calm, and transparent.
-        6. Do NOT say "AI decided". Say "This option was recommended because..." or "The system selected...".
-        7. Keep it under 3 sentences.
+      const prompt = `
+          You are an AI assistant for a group decision support app called 'Common Ground Finder'.
+          Explain why this specific option was recommended to the group.
+          
+          Data:
+          - Title: ${bestOption.title}
+          - Date/Time: ${bestOption.day}, ${bestOption.time}
+          - Venue: ${bestOption.location}
+          - Fairness: ${bestOption.fairnessScore}%
+          - Group Size: ${bestOption.attendees?.length || 0}
+          - Pros: ${bestOption.pros?.join(", ") || "N/A"}
+          - Alternatives: ${alternatives || "None"}
 
-        Output:
-        `;
+          Instructions:
+          - Clear, neutral, transparent language.
+          - Mention trade-offs if some people can't make it.
+          - Strictly under 3 sentences.
+          - Start with "This option was recommended because..."
+          `;
 
-    const resultGen = await model.generateContent(prompt);
-    const response = await resultGen.response;
-    const text = response.text();
+      const resultGen = await model.generateContent(prompt);
+      const response = await resultGen.response;
+      const text = response.text();
 
-    return text.trim();
-  } catch (error) {
-    console.error("Error generating explanation with Gemini:", error);
-    return FALLBACK_EXPLANATION;
+      console.log(`Success! Explanation generated using ${modelName}`);
+      return text.trim();
+    } catch (error: any) {
+      lastError = error.message || String(error);
+      console.warn(`Model ${modelName} failed: ${lastError}`);
+      if (lastError.includes("API_KEY_INVALID")) break; // Don't try other models if key is bad
+    }
   }
+
+  console.error("AI Generation failed for all models. Using fallback.");
+  if (lastError.includes("API_KEY_INVALID")) {
+    console.error("CRITICAL: Your Gemini API Key is invalid. Please check your .env file.");
+  } else if (lastError.includes("404")) {
+    console.error("HINT: The selected models are not available for your API key. Make sure the Generative Language API is enabled.");
+  }
+
+  return FALLBACK_EXPLANATION;
 }

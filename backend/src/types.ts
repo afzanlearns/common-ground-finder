@@ -35,4 +35,11 @@ export interface Result {
     fairnessScore: number; // Overall system fairness
     explanation?: string;
     isAiGenerated?: boolean;
+    stats?: {
+        topics: Record<string, number>;
+        availability: Record<string, number>;
+        totalParticipants: number;
+    };
+    totalParticipants?: number;
+    isDemoData?: boolean;
 }
