@@ -54,14 +54,24 @@ const Results = () => {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header variant="app" />
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <h2 className="text-2xl font-serif">Waiting for Responses...</h2>
-          <p className="text-muted-foreground mt-2 mb-6">
-            We need more participants to submit their preferences before we can calculate the best option.
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center max-w-md mx-auto">
+          <div className="h-16 w-16 mb-6 relative">
+             <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+             <div className="absolute inset-0 rounded-full border-4 border-t-primary animate-spin" />
+          </div>
+          <h2 className="text-2xl font-serif mb-3">Analyzing Consensus...</h2>
+          <p className="text-muted-foreground mb-8">
+            We've received preferences, but our AI Solver is still finding the optimal "Common Ground." 
+            This usually takes a few seconds.
           </p>
-          <Button asChild>
-            <Link to={`/preferences?groupId=${groupId}`}>Submit Your Preferences</Link>
-          </Button>
+          <div className="flex gap-4">
+            <Button variant="outline" onClick={() => window.location.reload()}>
+                Refresh Manually
+            </Button>
+            <Button asChild>
+                <Link to={`/preferences?groupId=${groupId}`}>Update My Input</Link>
+            </Button>
+          </div>
         </div>
       </div>
     );

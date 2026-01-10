@@ -169,7 +169,6 @@ const Preferences = () => {
       // We'll store the raw availability object properly or convert it if needed.
       // For now, let's store the raw 'availability' object as it contains clean structure with from/to
 
-      // Calculate active days for quick query
       const activeDays = Object.entries(availability)
         .filter(([_, slot]) => slot.selected)
         .map(([day]) => day);
@@ -188,7 +187,16 @@ const Preferences = () => {
         updatedAt: new Date()
       });
 
-      toast.success("Your preferences have been recorded. You’ll see the final plan once the group reaches consensus.");
+      // TRIGGER BACKEND CALCULATION
+      // We ping the Vercel backend to calculate the result for this group.
+      const BACKEND_URL = 'https://common-ground-finder-pa54.vercel.app/';
+      fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groupId })
+      }).catch(err => console.error("Failed to trigger backend:", err));
+
+      toast.success("Your preferences have been recorded. Calculating best plan...");
       navigate(`/results?groupId=${groupId}`);
     } catch (e: any) {
       console.error(e);
