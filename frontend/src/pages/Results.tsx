@@ -203,7 +203,11 @@ const Results = () => {
                       <span className="font-semibold text-sm">Location</span>
                     </div>
                     <p className="font-medium text-lg">{bestOption?.location || "TBD"}</p>
-                    <p className="text-sm text-muted-foreground">Selected based on central convenience.</p>
+                    <p className="text-sm text-muted-foreground">
+                      {bestOption?.meetingMode === "Online" 
+                        ? "Virtual Venue selected for accessibility." 
+                        : "Consensus Location selected for central convenience."}
+                    </p>
                   </div>
                 </div>
               </section>
@@ -276,7 +280,11 @@ const Results = () => {
                     <span className="font-medium">{(result?.totalParticipants || 0) - (bestOption?.attendees?.length || 0)} members</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-snug pt-1">
-                    This plan accommodates the majority of high-priority constraints.
+                    {fairnessScore < 40 
+                      ? "This plan represents a focused compromise for a subset of the group." 
+                      : fairnessScore < 70 
+                      ? "This plan balances the majority of group preferences effectively."
+                      : "This plan achieves exceptional alignment across all participants."}
                   </p>
                 </div>
               </div>
