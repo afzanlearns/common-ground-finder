@@ -11,7 +11,15 @@ export function ScoreCircle({ score, label = "Fairness Score", size = "md" }: Sc
     lg: { container: "h-24 w-24", text: "text-3xl", label: "text-sm" },
   };
 
+  const getScoreLabel = (val: number) => {
+    if (val < 40) return "Initial Consensus";
+    if (val < 60) return "Good Balance";
+    if (val < 80) return "High Harmony";
+    return "Perfect Alignment";
+  };
+
   const s = sizes[size];
+  const scoreLabel = getScoreLabel(score);
 
   return (
     <div className="flex flex-col items-center gap-1 group">
@@ -21,7 +29,7 @@ export function ScoreCircle({ score, label = "Fairness Score", size = "md" }: Sc
         <div className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-primary/10 transition-all duration-700 scale-110 group-hover:scale-100 opacity-0 group-hover:opacity-100" />
         <span className={`font-serif ${s.text} text-foreground transition-transform duration-300 group-hover:scale-110`}>{score}</span>
       </div>
-      <span className="text-xs text-primary italic font-serif transition-colors duration-300 group-hover:text-primary/80">Excellent Balance</span>
+      <span className="text-xs text-primary italic font-serif transition-colors duration-300 group-hover:text-primary/80">{scoreLabel}</span>
     </div>
   );
 }
