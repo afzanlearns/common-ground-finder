@@ -56,20 +56,20 @@ const Results = () => {
         <Header variant="app" />
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center max-w-md mx-auto">
           <div className="h-16 w-16 mb-6 relative">
-             <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
-             <div className="absolute inset-0 rounded-full border-4 border-t-primary animate-spin" />
+            <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+            <div className="absolute inset-0 rounded-full border-4 border-t-primary animate-spin" />
           </div>
           <h2 className="text-2xl font-serif mb-3">Analyzing Consensus...</h2>
           <p className="text-muted-foreground mb-8">
-            We've received preferences, but our AI Solver is still finding the optimal "Common Ground." 
+            We've received preferences, but our AI Solver is still finding the optimal "Common Ground."
             This usually takes a few seconds.
           </p>
           <div className="flex gap-4">
             <Button variant="outline" onClick={() => window.location.reload()}>
-                Refresh Manually
+              Refresh Manually
             </Button>
             <Button asChild>
-                <Link to={`/preferences?groupId=${groupId}`}>Update My Input</Link>
+              <Link to={`/preferences?groupId=${groupId}`}>Update My Input</Link>
             </Button>
           </div>
         </div>
@@ -204,8 +204,8 @@ const Results = () => {
                     </div>
                     <p className="font-medium text-lg">{bestOption?.location || "TBD"}</p>
                     <p className="text-sm text-muted-foreground">
-                      {bestOption?.meetingMode === "Online" 
-                        ? "Virtual Venue selected for accessibility." 
+                      {bestOption?.meetingMode === "Online"
+                        ? "Virtual Venue selected for accessibility."
                         : "Consensus Location selected for central convenience."}
                     </p>
                   </div>
@@ -280,11 +280,11 @@ const Results = () => {
                     <span className="font-medium">{(result?.totalParticipants || 0) - (bestOption?.attendees?.length || 0)} members</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-snug pt-1">
-                    {fairnessScore < 40 
-                      ? "This plan represents a focused compromise for a subset of the group." 
-                      : fairnessScore < 70 
-                      ? "This plan balances the majority of group preferences effectively."
-                      : "This plan achieves exceptional alignment across all participants."}
+                    {fairnessScore < 40
+                      ? "This plan represents a focused compromise for a subset of the group."
+                      : fairnessScore < 70
+                        ? "This plan balances the majority of group preferences effectively."
+                        : "This plan achieves exceptional alignment across all participants."}
                   </p>
                 </div>
               </div>
@@ -299,7 +299,7 @@ const Results = () => {
                     className="w-full gap-2 text-base px-8 h-12 shadow-md hover:shadow-xl transition-all"
                     onClick={() => navigate(`/confirmation?groupId=${groupId}`)}
                   >
-                    Confirm Plan & Send Invites
+                    Confirm Plan
                     <ArrowUpRight className="h-4 w-4" />
                   </Button>
                   <Button

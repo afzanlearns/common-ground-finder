@@ -166,9 +166,21 @@ const Confirmation = () => {
             </div>
           </div>
 
-          {/* 4. Closure & Actions */}
-          <div className="text-center animate-slide-up" style={{ animationDelay: "200ms" }}>
-            <p className="text-muted-foreground italic mb-8">
+          {/* 4. Decision Disclaimer */}
+          <div className="mb-10 animate-slide-up" style={{ animationDelay: "200ms" }}>
+            <div className="p-6 rounded-xl border border-border/60 bg-muted/10 text-center max-w-lg mx-auto">
+              <p className="text-foreground/90 font-medium mb-2">
+                This decision was made based on the preferences of participating members at the time of finalization.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Members who join later can still view this outcome.
+              </p>
+            </div>
+          </div>
+
+          {/* 5. Closure & Actions */}
+          <div className="text-center animate-slide-up" style={{ animationDelay: "300ms" }}>
+            <p className="text-muted-foreground italic mb-8 text-lg">
               "You’ve successfully guided your group to a fair decision."
             </p>
             <Button variant="outline" size="lg" onClick={() => navigate("/")} className="gap-2 hover:bg-muted">
