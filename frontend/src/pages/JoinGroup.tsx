@@ -15,7 +15,7 @@ const JoinGroup = () => {
     e.preventDefault();
 
     if (!inviteCode.trim()) {
-      toast.error("Please enter a valid code or link");
+      toast.error("Please enter a valid code");
       return;
     }
 
@@ -59,7 +59,7 @@ const JoinGroup = () => {
               <span className="heading-display-italic">Join</span> Group
             </h1>
             <p className="text-muted-foreground">
-              Enter your invite code or link to start participating.
+              Enter your invite code to start participating.
             </p>
           </div>
 
@@ -67,11 +67,11 @@ const JoinGroup = () => {
             <form onSubmit={handleJoin} className="space-y-6">
               <div className="space-y-2">
                 <label htmlFor="inviteCode" className="label-uppercase text-foreground">
-                  Invite Link or Code
+                  Invite Code
                 </label>
                 <Input
                   id="inviteCode"
-                  placeholder="e.g. group-xyz-123 or https://..."
+                  placeholder="e.g. group-xyz-123"
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value)}
                   className="h-11 font-medium bg-background"
@@ -83,7 +83,7 @@ const JoinGroup = () => {
                 {!isLoading && <ArrowRight className="h-4 w-4" />}
               </Button>
               <p className="text-xs text-muted-foreground text-center pt-2">
-                Don't have a code? Ask the group creator to share the invite link.
+                Don't have a code? Ask the group creator to share the invite code.
               </p>
             </form>
           </div>

@@ -94,8 +94,8 @@ const Index = () => {
                           <LinkIcon className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
                         </div>
                         <div className="text-left">
-                          <div className="font-medium transition-colors duration-300 group-hover:text-primary">Join with Link</div>
-                          <div className="text-xs text-muted-foreground text-wrap pr-2">Enter your preferences for an already existing group.</div>
+                          <div className="font-medium transition-colors duration-300 group-hover:text-primary">Join with Code</div>
+                          <div className="text-xs text-muted-foreground text-wrap pr-2">Enter your invite code for an existing group.</div>
                         </div>
                       </div>
                     </Link>
